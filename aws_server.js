@@ -17,6 +17,8 @@ var installNodeJsPackage=function(meteorPackage,nodePackage){
   };
   console.log("process.env.PACKAGE_DIRS");
   console.log(process.env.PACKAGE_DIRS);
+  console.log("process.env");
+  console.log(process.env);
   packagePath=path.join(process.env.PACKAGE_DIRS, meteorPackage);
   var pac;
   try{
