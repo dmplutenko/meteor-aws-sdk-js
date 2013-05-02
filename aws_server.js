@@ -5,7 +5,14 @@ var installNodeJsPackage=function(meteorPackage,nodePackage){
   var future = require ('fibers/future');
   var spawnSync = function(file, args, options) {
     var wrapped = future.wrap(function(cb) {
-      var proc = child_process.spawn(file, args, options);
+      var proc;
+      if(process.env.PACKAGE_DIRS!=undefined){
+        proc= child_process.spawn(file, args, options);
+      }else{
+        console.log("HEROKU JAAAAAAAAZ");
+        console.log(options.cwd);
+        proc= child_process.spawn( path.join(options.cwd,file), args, options);
+      }
       proc.on('close', function(code, signal) {
         cb(code !== 0 ? "Command failed with exit code " + code : null);
       });
