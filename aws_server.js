@@ -19,7 +19,13 @@ var installNodeJsPackage=function(meteorPackage,nodePackage){
   console.log(process.env.PACKAGE_DIRS);
   console.log("process.env");
   console.log(process.env);
-  packagePath=path.join(process.env.PACKAGE_DIRS, meteorPackage);
+  var packagePath;
+  if(process.env.PACKAGE_DIRS!=undefined){
+    packagePath=path.join(process.env.PACKAGE_DIRS, meteorPackage);
+  }else{
+    console.log("ON HEROKU");
+    packagePath=path.join(process.env.PWD,'.meteor','heroku_build/app/server/node_modules/npm/bin');
+  }
   var pac;
   try{
     pac=require(nodePackage);
