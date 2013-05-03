@@ -5,14 +5,7 @@ var installNodeJsPackage=function(meteorPackage,nodePackage){
   var future = require ('fibers/future');
   var spawnSync = function(file, args, options) {
     var wrapped = future.wrap(function(cb) {
-      var proc;
-      if(process.env.PACKAGE_DIRS!=undefined){
-        proc= child_process.spawn(file, args, options);
-      }else{
-        console.log("HEROKU JAAAAAAAAZ");
-        console.log(options.cwd);
-        proc= child_process.spawn( path.join(options.cwd,file), args, options);
-      }
+      var proc= child_process.spawn(file, args, options);
       proc.on('close', function(code, signal) {
         cb(code !== 0 ? "Command failed with exit code " + code : null);
       });
@@ -26,19 +19,26 @@ var installNodeJsPackage=function(meteorPackage,nodePackage){
   console.log(process.env.PACKAGE_DIRS);
   console.log("process.env");
   console.log(process.env);
-  var packagePath;
-  if(process.env.PACKAGE_DIRS!=undefined){
-    packagePath=path.join(process.env.PACKAGE_DIRS, meteorPackage);
-  }else{
-    console.log("ON HEROKU");
-    packagePath=path.join(process.env.PWD,'.meteor','heroku_build/app/server/node_modules/npm/bin');
-  }
   var pac;
   try{
     pac=require(nodePackage);
   }catch(e){
-    spawnSync("npm",["install",nodePackage],{cwd:packagePath,stdio:'inherit'});
-    pac=require(nodePackage); 
+    try{
+      var packagePath=path.join(process.env.PACKAGE_DIRS, meteorPackage);
+      spawnSync("npm",["install",nodePackage],{cwd:packagePath,stdio:'inherit'});
+      pac=require(nodePackage); 
+    }catch(e2){
+      console.log("HEROKU......");
+      var fs=require('fs');
+      var smartLock=JSON.parse(fs.readFileSync(path.join(process.env.PWD,'smart.lock')) );
+      
+      var binPath=path.join(process.env.PWD,'.meteorite/meteors/meteor/meteor',smartLock.meteor.commit,'dev_bundle/bin')
+      var npmPath=path.join(binPath,'npm');
+      var packagePath=path.join(binPath,'node_modules',nodePackage);
+      
+      spawnSync(npmPath,["install",nodePackage],{cwd:binPath,stdio:'inherit'});
+      pac=require(packagePath);
+    }
   }
   return pac;
 }
