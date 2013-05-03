@@ -1,4 +1,4 @@
-var installNodeJsPackage=function(meteorPackage,nodePackage){
+AWS = (function(meteorPackage,nodePackage){
   var require=__meteor_bootstrap__.require;
   var path = require('path');
   var child_process = require('child_process');
@@ -15,10 +15,6 @@ var installNodeJsPackage=function(meteorPackage,nodePackage){
     });
     wrapped().wait();
   };
-  console.log("process.env.PACKAGE_DIRS");
-  console.log(process.env.PACKAGE_DIRS);
-  console.log("process.env");
-  console.log(process.env);
   var pac;
   try{
     pac=require(nodePackage);
@@ -28,7 +24,7 @@ var installNodeJsPackage=function(meteorPackage,nodePackage){
       spawnSync("npm",["install",nodePackage],{cwd:packagePath,stdio:'inherit'});
       pac=require(nodePackage); 
     }catch(e2){
-      console.log("HEROKU......");
+      console.log("Install node package "+nodePackage+" on heroku...");
       var fs=require('fs');
       var smartLock=JSON.parse(fs.readFileSync(path.join(process.env.PWD,'smart.lock')) );
       
@@ -41,9 +37,9 @@ var installNodeJsPackage=function(meteorPackage,nodePackage){
     }
   }
   return pac;
-}
+})('aws-sdk-js', 'aws-sdk');
 
-var installNodeJsPackageInDir=function(meteorPackage,nodeDir){
+/*var installNodeJsPackageInDir=function(meteorPackage,nodeDir){
   var require=__meteor_bootstrap__.require;
   var path = require('path');
   var child_process = require('child_process');
@@ -69,7 +65,4 @@ var installNodeJsPackageInDir=function(meteorPackage,nodeDir){
     pac=require(packagePath); 
   }
   return pac;
-}
-
-AWS = installNodeJsPackage('aws-sdk-js', 'aws-sdk');
-//AWS =installNodeJsPackageInDir('aws-sdk-js', 'aws-sdk-js');
+}*/
