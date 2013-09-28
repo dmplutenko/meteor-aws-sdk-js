@@ -1,4 +1,4 @@
-AWS = (function(meteorPackage,nodePackage){
+Meteor.AWS = (function(meteorPackage,nodePackage){
   if (nodePackage===undefined){
     nodePackage=meteorPackage;
   }
