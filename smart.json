@@ -3,6 +3,6 @@
     "description": "aws-sdk-js for meteor",
     "homepage": "https://github.com/dmplutenko/meteor-aws-sdk-js",
     "author": "dmplutenko",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "git": "https://github.com/dmplutenko/meteor-aws-sdk-js.git"
 } 
